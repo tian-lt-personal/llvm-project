@@ -42,7 +42,7 @@ public:
 
 int main(int argc, char **argv) {
   const char *code = R"cpp(
-class Material{};
+type mat { void foo() {} int c = 0; };
     )cpp";
   if (argc == 2) {
     code = argv[1];

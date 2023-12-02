@@ -1154,6 +1154,8 @@ Parser::DeclGroupPtrTy Parser::ParseDeclOrFunctionDefInternal(
       switch(TKind) {
       case DeclSpec::TST_class:
         return 5;
+      case DeclSpec::TST_type:
+        return 4;
       case DeclSpec::TST_struct:
         return 6;
       case DeclSpec::TST_union:
@@ -1163,7 +1165,7 @@ Parser::DeclGroupPtrTy Parser::ParseDeclOrFunctionDefInternal(
       case DeclSpec::TST_interface:
         return 9;
       default:
-        llvm_unreachable("we only expect to get the length of the class/struct/union/enum");
+        llvm_unreachable("we only expect to get the length of the class/type/struct/union/enum");
       }
 
     };

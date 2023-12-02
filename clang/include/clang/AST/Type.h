@@ -5706,6 +5706,9 @@ enum class ElaboratedTypeKeyword {
   /// The "class" keyword introduces the elaborated-type-specifier.
   Class,
 
+  /// The "type" keyword introduces the elaborated-type-specifier.
+  Type,
+
   /// The "enum" keyword introduces the elaborated-type-specifier.
   Enum,
 
@@ -5730,6 +5733,9 @@ enum class TagTypeKind {
 
   /// The "class" keyword.
   Class,
+
+  /// The "type" keyword.
+  Type,
 
   /// The "enum" keyword.
   Enum

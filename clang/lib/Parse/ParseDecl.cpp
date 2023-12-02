@@ -2890,6 +2890,8 @@ bool Parser::ParseImplicitInt(DeclSpec &DS, CXXScopeSpec *SS,
         TagKind=tok::kw___interface;break;
       case DeclSpec::TST_class:
         TagName="class" ; FixitTagName = "class " ;TagKind=tok::kw_class ;break;
+      case DeclSpec::TST_type:
+        TagName="type" ; FixitTagName = "type " ;TagKind=tok::kw_type; break;
     }
 
     if (TagName) {
@@ -4381,6 +4383,7 @@ void Parser::ParseDeclarationSpecifiers(
     // class-specifier:
     case tok::kw_class:
     case tok::kw_struct:
+    case tok::kw_type:
     case tok::kw___interface:
     case tok::kw_union: {
       tok::TokenKind Kind = Tok.getKind();
@@ -5418,6 +5421,7 @@ bool Parser::isKnownToBeTypeSpecifier(const Token &Tok) const {
 
     // struct-or-union-specifier (C99) or class-specifier (C++)
   case tok::kw_class:
+  case tok::kw_type:
   case tok::kw_struct:
   case tok::kw___interface:
   case tok::kw_union:
@@ -5502,6 +5506,7 @@ bool Parser::isTypeSpecifierQualifier() {
 
     // struct-or-union-specifier (C99) or class-specifier (C++)
   case tok::kw_class:
+  case tok::kw_type:
   case tok::kw_struct:
   case tok::kw___interface:
   case tok::kw_union:
@@ -5714,6 +5719,7 @@ bool Parser::isDeclarationSpecifier(
 
     // struct-or-union-specifier (C99) or class-specifier (C++)
   case tok::kw_class:
+  case tok::kw_type:
   case tok::kw_struct:
   case tok::kw_union:
   case tok::kw___interface:
