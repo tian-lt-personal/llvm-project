@@ -686,8 +686,9 @@ ParsedType Sema::ActOnMSVCUnknownTypeName(const IdentifierInfo &II,
 /// isTagName() - This method is called *for error recovery purposes only*
 /// to determine if the specified name is a valid tag name ("struct foo").  If
 /// so, this returns the TST for the tag corresponding to it (TST_enum,
-/// TST_union, TST_struct, TST_interface, TST_class).  This is used to diagnose
-/// cases in C where the user forgot to specify the tag.
+/// TST_union, TST_struct, TST_interface, TST_class, TST_type).
+/// This is used to diagnose cases in C where the user forgot to specify the
+/// tag.
 DeclSpec::TST Sema::isTagName(IdentifierInfo &II, Scope *S) {
   // Do a tag name lookup in this scope.
   LookupResult R(*this, &II, SourceLocation(), LookupTagName);
@@ -704,6 +705,8 @@ DeclSpec::TST Sema::isTagName(IdentifierInfo &II, Scope *S) {
         return DeclSpec::TST_union;
       case TagTypeKind::Class:
         return DeclSpec::TST_class;
+      case TagTypeKind::Type:
+        return DeclSpec::TST_type;
       case TagTypeKind::Enum:
         return DeclSpec::TST_enum;
       }
@@ -899,6 +902,10 @@ static bool isTagTypeWithMissingTag(Sema &SemaRef, LookupResult &Result,
 
     case TagTypeKind::Union:
       FixItTagName = "union ";
+      break;
+
+    case TagTypeKind::Type:
+      FixItTagName = "type ";
       break;
     }
 
@@ -5113,6 +5120,7 @@ static unsigned GetDiagnosticTypeSpecifierID(const DeclSpec &DS) {
   case DeclSpec::TST_struct:
     return 1;
   case DeclSpec::TST_interface:
+  case DeclSpec::TST_type:
     return 2;
   case DeclSpec::TST_union:
     return 3;
@@ -5140,6 +5148,7 @@ Decl *Sema::ParsedFreeStandingDeclSpec(Scope *S, AccessSpecifier AS,
   Decl *TagD = nullptr;
   TagDecl *Tag = nullptr;
   if (DS.getTypeSpecType() == DeclSpec::TST_class ||
+      DS.getTypeSpecType() == DeclSpec::TST_type ||
       DS.getTypeSpecType() == DeclSpec::TST_struct ||
       DS.getTypeSpecType() == DeclSpec::TST_interface ||
       DS.getTypeSpecType() == DeclSpec::TST_union ||
@@ -5378,6 +5387,7 @@ Decl *Sema::ParsedFreeStandingDeclSpec(Scope *S, AccessSpecifier AS,
   if (!DS.getAttributes().empty() || !DeclAttrs.empty()) {
     DeclSpec::TST TypeSpecType = DS.getTypeSpecType();
     if (TypeSpecType == DeclSpec::TST_class ||
+        TypeSpecType == DeclSpec::TST_type ||
         TypeSpecType == DeclSpec::TST_struct ||
         TypeSpecType == DeclSpec::TST_interface ||
         TypeSpecType == DeclSpec::TST_union ||
@@ -16761,6 +16771,7 @@ TypedefDecl *Sema::ParseTypedefDecl(Scope *S, Declarator &D, QualType T,
   case TST_struct:
   case TST_interface:
   case TST_union:
+  case TST_type:
   case TST_class: {
     TagDecl *tagFromDeclSpec = cast<TagDecl>(D.getDeclSpec().getRepAsDecl());
     setTagNameForLinkagePurposes(tagFromDeclSpec, NewTD);
@@ -16869,6 +16880,7 @@ Sema::NonTagKind Sema::getNonTagTypeDeclKind(const Decl *PrevDecl,
   case TagTypeKind::Struct:
   case TagTypeKind::Interface:
   case TagTypeKind::Class:
+  case TagTypeKind::Type:
     return getLangOpts().CPlusPlus ? NTK_NonClass : NTK_NonStruct;
   case TagTypeKind::Union:
     return NTK_NonUnion;
