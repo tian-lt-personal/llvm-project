@@ -6,46 +6,53 @@
 
 using namespace clang;
 
-class FindNamedClassVisitor
-    : public RecursiveASTVisitor<FindNamedClassVisitor> {
+class Visitor : public RecursiveASTVisitor<Visitor> {
 public:
-  explicit FindNamedClassVisitor(ASTContext *Context) : Context(Context) {}
+  explicit Visitor(ASTContext *ctx) : ctx_(ctx) {}
+  bool VisitCXXRecordDecl(CXXRecordDecl *dcl) {
+    dcl->dump(llvm::outs());
+    return true;
+  }
 
-  bool VisitCXXRecordDecl(CXXRecordDecl *Declaration) {
-    Declaration->dump(llvm::outs());
+  bool VisitFunctionDecl(FunctionDecl *dcl) {
+    dcl->dump(llvm::outs());
     return true;
   }
 
 private:
-  ASTContext *Context;
+  ASTContext *ctx_;
 };
 
-class FindNamedClassConsumer : public clang::ASTConsumer {
+class TranslationUnitConsumer : public clang::ASTConsumer {
 public:
-  explicit FindNamedClassConsumer(ASTContext *Context) : Visitor(Context) {}
+  explicit TranslationUnitConsumer(ASTContext *ctx) : visitor_(ctx) {}
 
-  virtual void HandleTranslationUnit(clang::ASTContext &Context) {
-    Visitor.TraverseDecl(Context.getTranslationUnitDecl());
+  void HandleTranslationUnit(clang::ASTContext &ctx) override {
+    visitor_.TraverseDecl(ctx.getTranslationUnitDecl());
   }
 
 private:
-  FindNamedClassVisitor Visitor;
+  Visitor visitor_;
 };
 
-class FindNamedClassAction : public clang::ASTFrontendAction {
+class ExpAction : public clang::ASTFrontendAction {
 public:
-  virtual std::unique_ptr<clang::ASTConsumer>
-  CreateASTConsumer(clang::CompilerInstance &Compiler, llvm::StringRef InFile) {
-    return std::make_unique<FindNamedClassConsumer>(&Compiler.getASTContext());
+  std::unique_ptr<clang::ASTConsumer>
+  CreateASTConsumer(clang::CompilerInstance &compiler,
+                    llvm::StringRef) override {
+    return std::make_unique<TranslationUnitConsumer>(&compiler.getASTContext());
   }
 };
 
 int main(int argc, char **argv) {
   const char *code = R"cpp(
-type mat { void foo() {} int c = 0; };
+type mat { void foo() {} };
+int main() {
+  mat* bar = nullptr;
+}
     )cpp";
   if (argc == 2) {
     code = argv[1];
   }
-  clang::tooling::runToolOnCode(std::make_unique<FindNamedClassAction>(), code);
+  clang::tooling::runToolOnCode(std::make_unique<ExpAction>(), code);
 }
