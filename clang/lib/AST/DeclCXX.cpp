@@ -2021,6 +2021,7 @@ void CXXRecordDecl::completeDefinition(CXXFinalOverriderMap *FinalOverriders) {
   if (this->getTagKind() == TagTypeKind::Type) {
     data().Polymorphic = true;
     data().Abstract = true;
+    data().Aggregate = false;
   }
 
   // If the class may be abstract (but hasn't been marked as such), check for
