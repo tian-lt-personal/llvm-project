@@ -9969,3 +9969,16 @@ QualType Sema::BuildAtomicType(QualType T, SourceLocation Loc) {
   // Build the pointer type.
   return Context.getAtomicType(T);
 }
+
+bool Sema::IsTypedBy(SourceLocation Loc, QualType Impl, QualType Abstract) {
+  if (!getLangOpts().CPlusPlus)
+    return false;
+
+  auto *AbstractRD = Abstract->getAsCXXRecordDecl();
+  if (AbstractRD->getTagKind() != TagTypeKind::Type) {
+    return false;
+  }
+
+  // TODO: check if the impl type can be associated to the abstract type.
+  return true;
+}

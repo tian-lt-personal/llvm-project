@@ -50,9 +50,13 @@ type Mat {
     void foo() {}
 };
 
+struct Glass {
+    void foo() {}
+};
+
 int main() {
-  Mat mat;
-  Mat* bar = nullptr;
+  Glass glass;
+  Mat* p = &glass;
 }
     )cpp";
   if (argc == 2) {
