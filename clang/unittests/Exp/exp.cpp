@@ -46,9 +46,13 @@ public:
 
 int main(int argc, char **argv) {
   const char *code = R"cpp(
-type mat { void foo() {} };
+type Mat {
+    void foo() {}
+};
+
 int main() {
-  mat* bar = nullptr;
+  Mat mat;
+  Mat* bar = nullptr;
 }
     )cpp";
   if (argc == 2) {
