@@ -3024,6 +3024,8 @@ TypeWithKeyword::getKeywordForTypeSpec(unsigned TypeSpec) {
     return ElaboratedTypeKeyword::Typename;
   case TST_class:
     return ElaboratedTypeKeyword::Class;
+  case TST_type:
+    return ElaboratedTypeKeyword::Type;
   case TST_struct:
     return ElaboratedTypeKeyword::Struct;
   case TST_interface:
@@ -3040,6 +3042,8 @@ TypeWithKeyword::getTagTypeKindForTypeSpec(unsigned TypeSpec) {
   switch(TypeSpec) {
   case TST_class:
     return TagTypeKind::Class;
+  case TST_type:
+    return TagTypeKind::Type;
   case TST_struct:
     return TagTypeKind::Struct;
   case TST_interface:
@@ -3058,6 +3062,8 @@ TypeWithKeyword::getKeywordForTagTypeKind(TagTypeKind Kind) {
   switch (Kind) {
   case TagTypeKind::Class:
     return ElaboratedTypeKeyword::Class;
+  case TagTypeKind::Type:
+    return ElaboratedTypeKeyword::Type;
   case TagTypeKind::Struct:
     return ElaboratedTypeKeyword::Struct;
   case TagTypeKind::Interface:
@@ -3075,6 +3081,8 @@ TypeWithKeyword::getTagTypeKindForKeyword(ElaboratedTypeKeyword Keyword) {
   switch (Keyword) {
   case ElaboratedTypeKeyword::Class:
     return TagTypeKind::Class;
+  case ElaboratedTypeKeyword::Type:
+    return TagTypeKind::Type;
   case ElaboratedTypeKeyword::Struct:
     return TagTypeKind::Struct;
   case ElaboratedTypeKeyword::Interface:
@@ -3097,6 +3105,7 @@ TypeWithKeyword::KeywordIsTagTypeKind(ElaboratedTypeKeyword Keyword) {
   case ElaboratedTypeKeyword::Typename:
     return false;
   case ElaboratedTypeKeyword::Class:
+  case ElaboratedTypeKeyword::Type:
   case ElaboratedTypeKeyword::Struct:
   case ElaboratedTypeKeyword::Interface:
   case ElaboratedTypeKeyword::Union:
@@ -3114,6 +3123,8 @@ StringRef TypeWithKeyword::getKeywordName(ElaboratedTypeKeyword Keyword) {
     return "typename";
   case ElaboratedTypeKeyword::Class:
     return "class";
+  case ElaboratedTypeKeyword::Type:
+    return "type";
   case ElaboratedTypeKeyword::Struct:
     return "struct";
   case ElaboratedTypeKeyword::Interface:

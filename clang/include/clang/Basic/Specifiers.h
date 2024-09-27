@@ -80,6 +80,7 @@ namespace clang {
     TST_union,
     TST_struct,
     TST_class,     // C++ class type
+    TST_type,      // polymorphic type
     TST_interface, // C++ (Microsoft-specific) __interface type
     TST_typename,  // Typedef, C++ class-name or enum name, etc.
     TST_typeofType,        // C23 (and GNU extension) typeof(type-name)

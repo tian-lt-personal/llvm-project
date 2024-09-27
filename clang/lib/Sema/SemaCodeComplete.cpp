@@ -5893,6 +5893,7 @@ void Sema::CodeCompleteTag(Scope *S, unsigned TagSpec) {
 
   case DeclSpec::TST_struct:
   case DeclSpec::TST_class:
+  case DeclSpec::TST_type:
   case DeclSpec::TST_interface:
     Filter = &ResultBuilder::IsClassOrStruct;
     ContextKind = CodeCompletionContext::CCC_ClassOrStructTag;

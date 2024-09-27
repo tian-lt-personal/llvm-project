@@ -1582,6 +1582,7 @@ static QualType ConvertDeclSpecToType(TypeProcessingState &state) {
     declarator.setInvalidType(true);
     break;
   case DeclSpec::TST_class:
+  case DeclSpec::TST_type:
   case DeclSpec::TST_enum:
   case DeclSpec::TST_union:
   case DeclSpec::TST_struct:
@@ -9980,4 +9981,17 @@ QualType Sema::BuildAtomicType(QualType T, SourceLocation Loc) {
 
   // Build the pointer type.
   return Context.getAtomicType(T);
+}
+
+bool Sema::IsTypedBy(SourceLocation Loc, QualType Impl, QualType Abstract) {
+  if (!getLangOpts().CPlusPlus)
+    return false;
+
+  auto *AbstractRD = Abstract->getAsCXXRecordDecl();
+  if (AbstractRD->getTagKind() != TagTypeKind::Type) {
+    return false;
+  }
+
+  // TODO: check if the impl type can be associated to the abstract type.
+  return true;
 }
